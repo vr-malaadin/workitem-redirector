@@ -1,4 +1,4 @@
-# WorkItem Redirector
+# <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTh8mC7f14ESDFQC0XbM6xcH6wLakU8hythSw&s" alt="Icon" width="40" height="40"> WorkItem Redirector
 
 ![WorkItem Redirector](https://img.shields.io/badge/status-published-brightgreen)
 
