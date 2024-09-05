@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkItem Redirector</title>
-    <link rel="icon" type="image/x-icon"
-        href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTh8mC7f14ESDFQC0XbM6xcH6wLakU8hythSw&s">
+    <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTh8mC7f14ESDFQC0XbM6xcH6wLakU8hythSw&s">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,39 +15,23 @@
             margin: 0;
             background-color: #f0f0f0;
         }
-
         .container {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-
         input {
             font-size: 16px;
             padding: 10px 15px;
             border: none;
             border-radius: 5px;
-            /* outline: none; */
             outline-color: #1978DD;
             width: 200px;
             position: relative;
         }
-
-        input::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            right: -3px;
-            bottom: -3px;
-            left: -3px;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
-            filter: blur(10px);
-            border-radius: 8px;
-            z-index: -1;
-        }
-
-        button {
+        .go-button {
             font-size: 16px;
             padding: 10px 15px;
             cursor: pointer;
@@ -59,12 +41,11 @@
             border-radius: 5px;
             margin-left: 10px;
         }
-
         .input-wrapper {
             position: relative;
             display: inline-block;
+            margin-bottom: 20px;
         }
-
         .input-wrapper::before {
             content: '';
             position: absolute;
@@ -77,17 +58,40 @@
             border-radius: 8px;
             z-index: -1;
         }
+        .my-workitems {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+        .my-workitems-button {
+            font-size: 16px;
+            padding: 12px 20px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .my-workitems-button:hover {
+            background-color: #45a049;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="input-wrapper">
             <input type="number" id="workitemID" placeholder="Enter a WorkItem ID" autofocus>
         </div>
-        <button onclick="redirect()">Go</button>
+        <button onclick="redirect()" class="go-button">Go</button>
+        <br>
+        <a href="http://developmentvlan:8585/tfs/web/UI/Pages/WorkItems/QueryResult.aspx?path=Vanrise%2FMy%20Queries%2FAssigned%20To%20me&pguid=81f5a887-a9da-41fc-8c45-50b4cb40e1ea" class="my-workitems">
+            <button class="my-workitems-button">Go to My WorkItems</button>
+        </a>
     </div>
-
     <script>
         function redirect() {
             const number = document.getElementById('workitemID').value;
@@ -98,25 +102,20 @@
                 alert('Please enter a WorkItem ID');
             }
         }
-
         const input = document.getElementById('workitemID');
-
         // Keep focus on the input field
         input.addEventListener('blur', function () {
             setTimeout(() => this.focus(), 0);
         });
-
         input.addEventListener('keyup', function (event) {
             if (event.key === 'Enter') {
                 redirect();
             }
         });
-
         // Ensure focus on page load
         window.onload = function () {
             input.focus();
         }
     </script>
 </body>
-
 </html>
