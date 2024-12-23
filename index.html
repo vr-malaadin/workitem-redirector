@@ -96,7 +96,7 @@
         function redirect() {
             const number = document.getElementById('workitemID').value;
             if (number) {
-                const url = `http://developmentvlan:8585/tfs/web/wi.aspx?id=${number}`;
+                const url = `http://172.30.0.12:8080/tfs/web/wi.aspx?id=${number}`;
                 window.location.href = url;
             } else {
                 alert('Please enter a WorkItem ID');
