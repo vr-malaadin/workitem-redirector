@@ -214,6 +214,8 @@
             margin: 1.5rem 0;
             display: flex;
             justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
 
         .switch {
@@ -261,20 +263,17 @@
             transform: translateX(24px);
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.75rem;
-                border-radius: 1rem;
-            }
-            
-            .title {
-                font-size: 1.75rem;
-            }
-            
-            .button {
-                width: 100%;
-                justify-content: center;
-            }
+        .environment-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -304,7 +303,7 @@
 
         <div class="mode-toggle">
             <label class="switch">
-                <input type="checkbox" id="embeddedModeToggle" checked>
+                <input type="checkbox" id="embeddedModeToggle">
                 <span class="slider"></span>
             </label>
             <label style="margin-left: 0.5rem; font-size: 0.9rem;">Embedded Mode</label>
@@ -317,6 +316,13 @@
             <i class="fas fa-tasks"></i>
             My WorkItems
         </a>
+		
+        <!-- Environment Warning Banner -->
+        <div id="environmentWarning" class="environment-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Embedded mode only works when running locally.</span>
+        </div>
+
     </div>
 
     <!-- Embedded Browser Section -->
@@ -334,11 +340,27 @@
     </div>
 
     <script>
-        const embeddedModeToggle = document.getElementById('embeddedModeToggle');
-        const browserContainer = document.querySelector('.browser-container');
-        const browserFrame = document.getElementById('browserFrame');
-        const loadingIndicator = document.getElementById('loadingIndicator');
+        // Environment detection
+        const isLocal = window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1' || 
+                      window.location.protocol === 'http:' || 
+                window.location.protocol === 'file:';
 
+        // Initialize UI state
+        window.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('embeddedModeToggle');
+            const warning = document.getElementById('environmentWarning');
+            
+            if (isLocal) {
+                toggle.checked = true;
+                warning.style.display = 'none';
+            } else {
+                toggle.checked = false;
+                warning.style.display = 'flex';
+            }
+        });
+
+        // Redirect function
         function redirect() {
             const workitemID = document.getElementById('workitemID').value.trim();
             const inputField = document.getElementById('workitemID');
@@ -354,27 +376,34 @@
 
             const url = `http://172.30.0.12:8080/tfs/web/wi.aspx?id=${workitemID}`;
 
-            if (embeddedModeToggle.checked) {
+            if (document.getElementById('embeddedModeToggle').checked) {
+                if (!isLocal && !confirm('Embedded mode only works when running locally. Continue?')) {
+                    return;
+                }
                 openEmbeddedBrowser(url);
             } else {
                 window.open(url, '_blank');
             }
         }
 
+        // Embedded browser functions
         function openEmbeddedBrowser(url) {
+            const browserContainer = document.querySelector('.browser-container');
+            const loadingIndicator = document.getElementById('loadingIndicator');
             browserContainer.style.display = 'flex';
             loadingIndicator.style.display = 'block';
-            browserFrame.src = url;
+            document.getElementById('browserFrame').src = url;
         }
 
         function closeEmbeddedBrowser() {
+            const browserContainer = document.querySelector('.browser-container');
             browserContainer.style.display = 'none';
-            browserFrame.src = '';
+            document.getElementById('browserFrame').src = '';
         }
 
         // Event Listeners
-        browserFrame.addEventListener('load', () => {
-            loadingIndicator.style.display = 'none';
+        document.getElementById('browserFrame').addEventListener('load', () => {
+            document.getElementById('loadingIndicator').style.display = 'none';
         });
 
         document.getElementById('workitemID').addEventListener('input', function() {
