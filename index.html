@@ -3,119 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkItem Redirector</title>
-    <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTh8mC7f14ESDFQC0XbM6xcH6wLakU8hythSw&s">
+    <title>WorkItem Navigator</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/7510/7510794.png">
     <style>
+        :root {
+            --primary: #2962ff;
+            --secondary: #00c853;
+            --error: #d32f2f;
+            --background: #f8f9fa;
+            --text: #2d3436;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
         }
+
         .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 480px;
             text-align: center;
         }
-        input {
-            font-size: 16px;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            outline-color: #1978DD;
-            width: 200px;
-            position: relative;
+
+        .title {
+            margin-bottom: 2rem;
+            font-size: 1.75rem;
+            color: var(--primary);
+            font-weight: 600;
         }
-        .go-button {
-            font-size: 16px;
-            padding: 10px 15px;
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.2);
+            outline: none;
+        }
+
+        .input-field::placeholder {
+            color: #bdbdbd;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin-left: 10px;
-        }
-        .input-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-        .input-wrapper::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            right: -3px;
-            bottom: -3px;
-            left: -3px;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
-            filter: blur(10px);
-            border-radius: 8px;
-            z-index: -1;
-        }
-        .my-workitems {
-            display: inline-block;
-            margin-top: 10px;
+            transition: all 0.3s ease;
             text-decoration: none;
         }
-        .my-workitems-button {
-            font-size: 16px;
-            padding: 12px 20px;
-            cursor: pointer;
-            background-color: #4CAF50;
+
+        .button-primary {
+            background: var(--primary);
             color: white;
-            border: none;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .my-workitems-button:hover {
-            background-color: #45a049;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transform: translateY(-2px);
+
+        .button-primary:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+        }
+
+        .button-secondary {
+            background: var(--secondary);
+            color: white;
+            margin-top: 1.5rem;
+        }
+
+        .button-secondary:hover {
+            background: #009624;
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            color: var(--error);
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="input-wrapper">
-            <input type="number" id="workitemID" placeholder="Enter a WorkItem ID" autofocus>
+        <h1 class="title">WorkItem Navigator</h1>
+        
+        <div class="input-group">
+            <input 
+                type="number" 
+                id="workitemID" 
+                class="input-field"
+                placeholder="Enter WorkItem ID (e.g., 12345)"
+                autofocus
+                autocomplete="off"
+            >
+            <div id="errorMessage" class="error-message">Please enter a valid WorkItem ID</div>
         </div>
-        <button onclick="redirect()" class="go-button">Go</button>
-        <br>
-        <a href="http://172.30.0.12:8080/tfs/web/UI/Pages/WorkItems/QueryResult.aspx?path=Vanrise%2FMy%20Queries%2FAssigned%20To%20me&pguid=81f5a887-a9da-41fc-8c45-50b4cb40e1ea" class="my-workitems">
-            <button class="my-workitems-button">Go to My WorkItems</button>
+
+        <button onclick="redirect()" class="button button-primary">
+            Open WorkItem
+        </button>
+
+        <a 
+            href="http://172.30.0.12:8080/tfs/web/UI/Pages/WorkItems/QueryResult.aspx?path=Vanrise%2FMy%20Queries%2FAssigned%20To%20me&pguid=81f5a887-a9da-41fc-8c45-50b4cb40e1ea"
+            class="button button-secondary"
+        >
+            My WorkItems
         </a>
     </div>
+
     <script>
         function redirect() {
-            const number = document.getElementById('workitemID').value;
-            if (number) {
-                const url = `http://172.30.0.12:8080/tfs/web/wi.aspx?id=${number}`;
-                window.location.href = url;
-            } else {
-                alert('Please enter a WorkItem ID');
+            const input = document.getElementById('workitemID');
+            const error = document.getElementById('errorMessage');
+            const workitemID = input.value.trim();
+
+            if (!workitemID) {
+                input.focus();
+                error.classList.add('show');
+                return;
             }
+
+            error.classList.remove('show');
+            window.location.href = `http://172.30.0.12:8080/tfs/web/wi.aspx?id=${workitemID}`;
         }
-        const input = document.getElementById('workitemID');
-        // Keep focus on the input field
-        input.addEventListener('blur', function () {
-            setTimeout(() => this.focus(), 0);
+
+        // Event Listeners
+        document.getElementById('workitemID').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            document.getElementById('errorMessage').classList.remove('show');
         });
-        input.addEventListener('keyup', function (event) {
-            if (event.key === 'Enter') {
-                redirect();
-            }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') redirect();
         });
-        // Ensure focus on page load
-        window.onload = function () {
-            input.focus();
-        }
+
+        // Maintain focus on input
+        document.getElementById('workitemID').addEventListener('blur', function() {
+            setTimeout(() => this.focus(), 10);
+        });
     </script>
 </body>
 </html>
